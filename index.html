@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 指定字符集 -->
+    <meta charset="utf-8">
+    <!-- 使用Edge最新的浏览器的渲染方式 -->
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <!-- viewport视口：网页可以根据设置的宽度自动进行适配，在浏览器的内部虚拟一个容器，容器的宽度与设备的宽度相同。
+    width: 默认宽度与设备的宽度相同
+    initial-scale: 初始的缩放比，为1:1 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>首页</title>
+    <!-- 1. 导入CSS的全局样式 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- 2. jQuery导入，建议使用1.9以上的版本 -->
+    <script src="https://resource.dynv6.net/jquery/jquery-3.6.1.min.js"></script>
+    <!-- 3. 导入bootstrap的js文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script >
+        function add_img(id,src,text,tables){
+            let img = "<li class=\"col-md-4 col-lg-2 col-6 col-sm-6 related_box\"><a href=\"photo.html?tables="+tables+"&id="+id+"\"  alt=X title= target=\"_blank\"><img src=\""+src+"\" ><br><span class=\"r_title\">"+text+"</span></a></li>";
+            $("#imgrow").append(img);
+        }
+        function set_tiao(e,page,totalpage){
+            $("#jdt").val(page);
+            $("#jdt").attr("max",totalpage);
+            $("#img_num").html(e+"%");
+        }
+        function addnav(efun,id,text){
+            let nav = `<li class="page-item"><a class="page-link" href="javascript:funpage('${efun}',${id})">${text}</a></li>`;
+            $("#nav").append(nav)
+
+        }
+        function addspen(text){
+            let nav = "<spen class=\"page-link disabled\">"+text+"</spen>";
+            $("#nav").append(nav)
+
+        }
+        function addactive(text){
+            let nav = "<spen class=\"page-link active\">"+text+"</spen>";
+            $("#nav").append(nav)
+
+        }
+        function setstorng(total,page){
+            $("#strong").html("共"+total+"条记录,共"+page+"页")
+        }
+
+        function showpager(efun,cur,max){
+
+            var beindex=cur-5; // 假定左边界
+
+            var endindex=cur+4; // 假定右边界
+
+            if(beindex < 1){beindex=1;} // 微调
+
+            if(endindex>max){endindex=max;}
+
+            if(cur>1){addnav(efun,cur-1,"<<")}
+            else if (cur == 1){addspen("<<")}
+
+
+            for(i=beindex;i<=endindex;i++){
+                if (i == cur){
+                    addactive(i,i)
+                }
+                else {
+                    addnav(efun,i,i)
+                }
+            }
+
+            if(cur<max){
+                addnav(efun,cur+1,">>")
+            }else {
+                addspen(">>")
+            }
+        }
+        function addtable(e){
+            // language=HTML
+            // let table = ;
+
+        }
+        function fun(efun) {
+            $.post("imger",{tables:efun,row:$("#page").val(),search:$("#search-input").val()},function (data) {
+                $("#tiao").val(efun);
+                let currentPage = data.currentPage;
+                let totalPage = data.totalPage;
+                $("#page").val(currentPage);
+                $("#imgrow").empty();
+                $("#nav").empty();
+                showpager(efun,currentPage,totalPage)
+                let number = Math.round(currentPage / totalPage*100);
+                console.log(number)
+                set_tiao(number,currentPage,totalPage);
+                setstorng(data.totalCount,totalPage);
+                $.each(data.list,function (index,select) {
+                    add_img(select.id,select.thumbnail,select.name,select.table_name);
+                })
+            })
+        }
+
+        function tables(){
+            $.post("tables",function (data){
+                $.each(data,function (index) {
+                    if (index >= 20 && index <35){
+                        $("#navbarDropdown").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
+                    }else if(index >= 35){
+                        $("#navbarDropdown2").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
+                    }else{
+                        $("#tablee").prepend(`<li className="navbar-brand" style="margin: 0 5px 0 5px;font-size: 15px"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`)
+                    }
+
+                })
+            })
+        }
+
+        $(function(){
+            fun("");
+            tables();
+            $("#search-input").keydown(function (event){
+                if(event.keyCode == 13){
+                    table('')
+                }
+            })
+            $("#jdt").on("mousedown touchstart",function () {
+                $("#rq").on("mousemove touchmove",function (){
+                    let val = $("#jdt").val();
+                    let max = $("#jdt").attr("max");
+                    let e = Math.round(val/max*100);
+                    $("#img_num").html(e+"%");
+                })
+
+            })
+
+
+            $("#jdt").on("touchend mouseup",function () {
+                $("#rq").off()
+                $("#page").val($("#jdt").val());
+                fun($("#tiao").val())
+            })
+
+        })
+        function table(efun){
+            $("#page").val(1);
+            // $("#search-input").val($("#search-input").val());
+            fun(efun);
+        }
+        function funpage(efun,e) {
+            $("#page").val(e);
+            fun(efun);
+        }
+    </script>
+
+<style>
+    body{
+        padding-top: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .related_box{
+        overflow: hidden;
+
+    }
+    .related_box img {
+        border: 3px solid #dadada;
+        width: 100%;
+        height: 80%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .related_box .r_title {
+        line-height: 20px;
+        height: 20%;
+        font-size: 15px;
+        overflow: hidden;
+        text-align: left;
+
+    }
+    .related_boxindex img {
+        border: 3px solid #dadada;
+        width: 100%;
+    }
+    .nav{
+        margin-top: 20px;
+        /*position: relative;*/
+    }
+    #imgrow li{
+        list-style: none;
+        padding: 7px;
+        height: 330px;
+    }
+</style>
+
+</head>
+<body>
+<!--<img  src="https://pangpang.dynv6.net/api/thumbnail/?path=/video/Video1/[456k.me]stars-156.mp4&size=medium" width="200px" height="auto">-->
+<input value="1" hidden id="page">
+<input value="" hidden id="tiao">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="tablee">
+                <li class="nav-item dropdown" >
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 15px">更多....</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="navbarDropdown" style="font-size: 15px">
+                    </ul>
+                </li>
+                <li class="nav-item dropdown" >
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 15px">更多....</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="navbarDropdown2" style="font-size: 15px">
+                </ul>
+                </li>
+            </ul>
+
+
+            <div class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
+                <button class="btn btn-outline-success" type="submit" onclick="table('')">Search</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="progress col-sm-12" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" id="rq">
+        <input type="range" name="points" style="width:100%;" class="progress-bar"  value="50" min="0" max="100" width="100%"  id="jdt"><div id="img_num">%</div>
+    </div>
+    <div class="row" id="imgrow">
+
+    </div>
+    <nav aria-label="Page navigation example" style="align-items: center;margin-top: 20px;text-align: center">
+        <ul class="pagination justify-content-center" id="nav">
+        </ul>
+            <strong id="strong">共x条记录,共x页</strong>
+    </nav>
+</body>
+</html>
