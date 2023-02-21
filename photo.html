@@ -60,8 +60,10 @@
     }
 
     $(function(){
-      let ids = getUrlParam("id");
+       let ids = parseInt(getUrlParam("id"));
       let tables = getUrlParam("tables");
+      $("#up").prop("href","photo.html?tables="+tables+"&id="+(ids == 1 ? 1 : (ids-1)));
+      $("#down").prop("href","photo.html?tables="+tables+"&id="+(ids+1));
       $.post("https://1234560.dynv6.net/imgerlist",{id:ids,tables:tables},function (data) {
         $("#name").html(data.name);
         let prefix = data.prefix;
@@ -87,7 +89,12 @@
 <h1 id="name"></h1>
 <div class="related_box" id="img_container">
 </div>
-
+<nav aria-label="Page navigation example" style="align-items: center;margin-top: 40px;text-align: center">
+  <ul class="pagination pagination-lg justify-content-center" id="nav" style="width: 100%">
+    <li style="width: 40%; margin:0 10px 0 10px" class="page-item"><a id="up" class="page-link" href="#">上一个</a></li>
+    <li style="width: 40%; margin:0 10px 0 10px" class="page-item"><a id="down" class="page-link" href="#">下一个</a></li>
+  </ul>
+</nav>
 
 
 </body>
