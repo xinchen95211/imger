@@ -70,7 +70,10 @@
         console.log(suffix)
         $.each(data.collection,function (index,item) {
           let img = "<img src=\""+ prefix + suffix +"\\"+ item+"\">";
-          $("#img_container").append(img)
+          setTimeout(function () {
+            let img = "<img src=\""+ prefix + suffix +"\\"+ item+"\">";
+            $("#img_container").append(img)
+          },index*900)
         })
 
 
