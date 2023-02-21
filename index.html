@@ -80,7 +80,11 @@
             // let table = ;
 
         }
+        var pageTimer = {} ;
         function fun(efun) {
+             for (let each in pageTimer) {
+                clearTimeout(pageTimer[each]);
+            };
             $.post("https://1234560.dynv6.net/imger",{tables:efun,row:$("#page").val(),search:$("#search-input").val()},function (data) {
                 $("#tiao").val(efun);
                 let currentPage = data.currentPage;
@@ -94,7 +98,13 @@
                 set_tiao(number,currentPage,totalPage);
                 setstorng(data.totalCount,totalPage);
                 $.each(data.list,function (index,select) {
-                    add_img(select.id,select.thumbnail,select.name,select.table_name);
+                     if (index >= 4){
+                    pageTimer[index] = setTimeout(function () {
+                        add_img(select.id,select.thumbnail,select.name,select.table_name);
+                    },(index-2)*800)
+                    }else {
+                        add_img(select.id,select.thumbnail,select.name,select.table_name);
+                    }
                 })
             })
         }
