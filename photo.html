@@ -62,7 +62,7 @@
     $(function(){
       let ids = getUrlParam("id");
       let tables = getUrlParam("tables");
-      $.post("imgerlist",{id:ids,tables:tables},function (data) {
+      $.post("https://cn-ah-dx-1.natfrp.cloud:31540/imgerlist",{id:ids,tables:tables},function (data) {
         $("#name").html(data.name);
         let prefix = data.prefix;
         let suffix = data.suffix;
