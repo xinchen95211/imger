@@ -81,7 +81,7 @@
 
         }
         function fun(efun) {
-            $.post("https://cn-ah-dx-1.natfrp.cloud:31540/imger",{tables:efun,row:$("#page").val(),search:$("#search-input").val()},function (data) {
+            $.post("https://1234560.dynv6.net/imger",{tables:efun,row:$("#page").val(),search:$("#search-input").val()},function (data) {
                 $("#tiao").val(efun);
                 let currentPage = data.currentPage;
                 let totalPage = data.totalPage;
@@ -100,7 +100,7 @@
         }
 
         function tables(){
-            $.post("https://cn-ah-dx-1.natfrp.cloud:31540/tables",function (data){
+            $.post("https://1234560.dynv6.net/tables",function (data){
                 $.each(data,function (index) {
                     if (index >= 20 && index <35){
                         $("#navbarDropdown").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
