@@ -81,47 +81,63 @@
 
         }
         var pageTimer = {} ;
-        function fun(efun) {
-             for (let each in pageTimer) {
+       function fun(efun) {
+            for (let each in pageTimer) {
                 clearTimeout(pageTimer[each]);
-            };
-            $.post("https://1234560.dynv6.net/imger",{tables:efun,row:$("#page").val(),search:$("#search-input").val()},function (data) {
-                $("#tiao").val(efun);
-                let currentPage = data.currentPage;
-                let totalPage = data.totalPage;
-                $("#page").val(currentPage);
-                $("#imgrow").empty();
-                $("#nav").empty();
-                showpager(efun,currentPage,totalPage)
-                let number = Math.round(currentPage / totalPage*100);
-                console.log(number)
-                set_tiao(number,currentPage,totalPage);
-                setstorng(data.totalCount,totalPage);
-                $.each(data.list,function (index,select) {
-                     if (index >= 4){
-                    pageTimer[index] = setTimeout(function () {
-                        add_img(select.id,select.thumbnail,select.name,select.table_name);
-                    },(index-2)*800)
-                    }else {
-                        add_img(select.id,select.thumbnail,select.name,select.table_name);
-                    }
-                })
-            })
+            }
+            $.ajax({
+                type: 'POST',
+                url: 'https://1234560.dynv6.net/imger',
+                data: {tables:efun,row:$("#page").val(),search:$("#search-input").val()},
+                success: function(data) {
+                    $("#tiao").val(efun);
+                    let currentPage = data.currentPage;
+                    let totalPage = data.totalPage;
+                    $("#page").val(currentPage);
+                    $("#imgrow").empty();
+                    $("#nav").empty();
+                    showpager(efun,currentPage,totalPage)
+                    let number = Math.round(currentPage / totalPage*100);
+                    console.log(number)
+                    set_tiao(number,currentPage,totalPage);
+                    setstorng(data.totalCount,totalPage);
+                    $.each(data.list,function (index,select) {
+                        if (index >= 4){
+                            pageTimer[index] = setTimeout(function () {
+                                add_img(select.id,select.thumbnail,select.name,select.table_name);
+                            },(index-3)*700)
+                        }else {
+                            add_img(select.id,select.thumbnail,select.name,select.table_name);
+                        }
+                    })
+                },
+                error: function(xhr, status, error) {
+                    fun(efun)
+                }
+            });
         }
 
         function tables(){
-            $.post("https://1234560.dynv6.net/tables",function (data){
-                $.each(data,function (index) {
-                    if (index >= 20 && index <35){
-                        $("#navbarDropdown").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
-                    }else if(index >= 35){
-                        $("#navbarDropdown2").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
-                    }else{
-                        $("#tablee").prepend(`<li className="navbar-brand" style="margin: 0 5px 0 5px;font-size: 15px"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`)
-                    }
+            $.ajax({
+                type: 'POST',
+                url: 'https://1234560.dynv6.net/tables',
+                data: {},
+                success: function(data) {
+                    $.each(data,function (index) {
+                        if (index >= 20 && index <35){
+                            $("#navbarDropdown").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
+                        }else if(index >= 35){
+                            $("#navbarDropdown2").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
+                        }else{
+                            $("#tablee").prepend(`<li className="navbar-brand" style="margin: 0 5px 0 5px;font-size: 15px"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`)
+                        }
 
-                })
-            })
+                    })
+                },
+                error: function(xhr, status, error) {
+                   tables()
+                }
+            });
         }
 
         $(function(){
