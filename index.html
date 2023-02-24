@@ -12,177 +12,22 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>首页</title>
     <!-- 1. 导入CSS的全局样式 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+
     <!-- 2. jQuery导入，建议使用1.9以上的版本 -->
-    <script src="https://resource.dynv6.net/jquery/jquery-3.6.1.min.js"></script>
+<!--     <script src="https://resource.dynv6.net/jquery/jquery-3.6.1.min.js"></script> -->
     <!-- 3. 导入bootstrap的js文件 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <script >
-        function add_img(id,src,text,tables){
-            let img = "<li class=\"col-md-4 col-lg-2 col-6 col-sm-6 related_box\"><a href=\"photo.html?tables="+tables+"&id="+id+"\"  alt=X title= target=\"_blank\"><img src=\""+src+"\" ><br><span class=\"r_title\">"+text+"</span></a></li>";
-            $("#imgrow").append(img);
-        }
-        function set_tiao(e,page,totalpage){
-            $("#jdt").val(page);
-            $("#jdt").attr("max",totalpage);
-            $("#img_num").html(e+"%");
-        }
-        function addnav(efun,id,text){
-            let nav = `<li class="page-item"><a class="page-link" href="javascript:funpage('${efun}',${id})">${text}</a></li>`;
-            $("#nav").append(nav)
+<!--     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script> -->
 
-        }
-        function addspen(text){
-            let nav = "<spen class=\"page-link disabled\">"+text+"</spen>";
-            $("#nav").append(nav)
-
-        }
-        function addactive(text){
-            let nav = "<spen class=\"page-link active\">"+text+"</spen>";
-            $("#nav").append(nav)
-
-        }
-        function setstorng(total,page){
-            $("#strong").html("共"+total+"条记录,共"+page+"页")
-        }
-
-        function showpager(efun,cur,max){
-
-            var beindex=cur-5; // 假定左边界
-
-            var endindex=cur+4; // 假定右边界
-
-            if(beindex < 1){beindex=1;} // 微调
-
-            if(endindex>max){endindex=max;}
-
-            if(cur>1){addnav(efun,cur-1,"<<")}
-            else if (cur == 1){addspen("<<")}
-
-
-            for(i=beindex;i<=endindex;i++){
-                if (i == cur){
-                    addactive(i,i)
-                }
-                else {
-                    addnav(efun,i,i)
-                }
-            }
-
-            if(cur<max){
-                addnav(efun,cur+1,">>")
-            }else {
-                addspen(">>")
-            }
-        }
-        function addtable(e){
-            // language=HTML
-            // let table = ;
-
-        }
-        var pageTimer = {} ;
-       function fun(efun) {
-            for (let each in pageTimer) {
-                clearTimeout(pageTimer[each]);
-            }
-            $.ajax({
-                type: 'POST',
-                url: 'https://1234560.dynv6.net/imger',
-                data: {tables:efun,row:$("#page").val(),search:$("#search-input").val()},
-                success: function(data) {
-                    $("#tiao").val(efun);
-                    let currentPage = data.currentPage;
-                    let totalPage = data.totalPage;
-                    $("#page").val(currentPage);
-                    $("#imgrow").empty();
-                    $("#nav").empty();
-                    showpager(efun,currentPage,totalPage)
-                    let number = Math.round(currentPage / totalPage*100);
-                    console.log(number)
-                    set_tiao(number,currentPage,totalPage);
-                    setstorng(data.totalCount,totalPage);
-                    $.each(data.list,function (index,select) {
-                        if (index >= 4){
-                            pageTimer[index] = setTimeout(function () {
-                                add_img(select.id,select.thumbnail,select.name,select.table_name);
-                            },(index-3)*700)
-                        }else {
-                            add_img(select.id,select.thumbnail,select.name,select.table_name);
-                        }
-                    })
-                },
-                error: function(xhr, status, error) {
-                    fun(efun)
-                }
-            });
-        }
-
-        function tables(){
-            $.ajax({
-                type: 'POST',
-                url: 'https://1234560.dynv6.net/tables',
-                data: {},
-                success: function(data) {
-                    $.each(data,function (index) {
-                        if (index >= 20 && index <35){
-                            $("#navbarDropdown").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
-                        }else if(index >= 35){
-                            $("#navbarDropdown2").append(`<li className="navbar-brand"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`);
-                        }else{
-                            $("#tablee").prepend(`<li className="navbar-brand" style="margin: 0 5px 0 5px;font-size: 15px"><a className="nav-link" aria-current="page"  href="javascript:table('${this.tablesname}')">${this.name}</a></li>`)
-                        }
-
-                    })
-                },
-                error: function(xhr, status, error) {
-                   tables()
-                }
-            });
-        }
-
-        $(function(){
-            fun("");
-            tables();
-            $("#search-input").keydown(function (event){
-                if(event.keyCode == 13){
-                    table('')
-                }
-            })
-            $("#jdt").on("mousedown touchstart",function () {
-                $("#rq").on("mousemove touchmove",function (){
-                    let val = $("#jdt").val();
-                    let max = $("#jdt").attr("max");
-                    let e = Math.round(val/max*100);
-                    $("#img_num").html(e+"%");
-                })
-
-            })
-
-
-            $("#jdt").on("touchend mouseup",function () {
-                $("#rq").off()
-                $("#page").val($("#jdt").val());
-                fun($("#tiao").val())
-            })
-
-        })
-        function table(efun){
-            $("#page").val(1);
-            // $("#search-input").val($("#search-input").val());
-            fun(efun);
-        }
-        function funpage(efun,e) {
-            $("#page").val(e);
-            fun(efun);
-        }
-    </script>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script src="js/index.js"></script>
+<!--     <link href="css/display.css"> -->
+    <link href="css/index.css">
 
 <style>
-    body{
-        padding-top: 10px;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
     .related_box{
         overflow: hidden;
 
@@ -194,85 +39,221 @@
         object-fit: cover;
         border-radius: 10px;
     }
-
     .related_box .r_title {
         line-height: 20px;
         height: 20%;
         font-size: 15px;
         overflow: hidden;
         text-align: left;
-
+        color: #0a6cd6;
     }
     .related_boxindex img {
         border: 3px solid #dadada;
         width: 100%;
     }
-    .nav{
-        margin-top: 20px;
-        /*position: relative;*/
-    }
     #imgrow li{
         list-style: none;
         padding: 7px;
-        height: 330px;
+        height: 350px;
     }
+
+
+    .demo-image__lazy  {
+        height: 600px;
+        overflow-y: auto;
+    }
+
+
 </style>
+
 
 </head>
 <body>
-<!--<img  src="https://pangpang.dynv6.net/api/thumbnail/?path=/video/Video1/[456k.me]stars-156.mp4&size=medium" width="200px" height="auto">-->
-<input value="1" hidden id="page">
-<input value="" hidden id="tiao">
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="tablee">
-                <li class="nav-item dropdown" >
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 15px">更多....</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="navbarDropdown" style="font-size: 15px">
-                    </ul>
-                </li>
-                <li class="nav-item dropdown" >
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 15px">更多....</a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="navbarDropdown2" style="font-size: 15px">
-                </ul>
-                </li>
-            </ul>
-
-
-            <div class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
-                <button class="btn btn-outline-success" type="submit" onclick="table('')">Search</button>
+<div id="app">
+<!--    导航栏-->
+    <el-row type="flex" style="text-align: center;align-items: center">
+        <el-col :xs="6" :sm="3" :lg="2"><el-link @click="drawer = true" icon="el-icon-guide" >导航页</el-link></el-col>
+        <el-col  :xs="17" :sm="20" :lg="21">
+            <el-slider @change="change"  v-model="currentPage" :min="1" :max="totalPage" v-if="totalPage!=1">
+        </el-slider>
+            <div> 共{{totalCount}}条数据,共{{totalPage}}页,当前第{{currentPage}}页</div>
+            <div style="margin-top: 15px;">
             </div>
+        </el-col>
+
+    </el-row >
+
+    <el-drawer
+            title="导航页"
+            :visible.sync="drawer"
+            direction="ltr"
+            :before-close="handleClose"
+            size="30"
+            style="text-align: center;align-items: center"
+    >
+        <el-input placeholder="请输入内容" v-model="search" class="input-with-select" clearable>
+            <el-button slot="append" icon="el-icon-search" @click="imglist"></el-button>
+        </el-input>
+
+        <div v-for="item of tables">
+        <el-button @click="handleClick(item.tablesname)" style="width: 100%;height: 100%">
+            {{item.name}}
+        </el-button>
+           <br>
         </div>
+    </el-drawer>
+
+<!--    //图片展示-->
+    <el-row>
+        <el-col :spen="24">
+    <div class="row  " id="imgrow" >
+        <li  class="el-col-md-8 el-col-lg-4 el-col-12 el-sm-12 related_box" v-for="(item,i) of img_list">
+            <a type="primary" @click="imgshow(item.id,item.table_name)" >
+            <img :src="item.thumbnail"><br>
+            <span class="r_title">{{item.name}}</span>
+        </a>
+
+        </li>
     </div>
-</nav>
+        </el-col>
+        </el-row>
 
+<!--    以下为图篇内容的展示-->
 
-
-
-
-
-
-
-
-
-
-
-    <div class="progress col-sm-12" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" id="rq">
-        <input type="range" name="points" style="width:100%;" class="progress-bar"  value="50" min="0" max="100" width="100%"  id="jdt"><div id="img_num">%</div>
+    <el-dialog
+            :visible.sync="dialogVisible"
+            width="90%"
+            :before-close="handleClose"
+         >
+<!--        <div style="overflow:scroll;height: 50%">-->
+            <div class="demo-image__lazy"  >
+                <el-image v-for="(url,i) in urls" :key="url" :src="(prefix)+(suffix)+'/'+(url)" style="width: 100%" lazy>
+                </el-image>
+<!--            </div>-->
     </div>
-    <div class="row" id="imgrow">
+    </el-dialog>
 
-    </div>
-    <nav aria-label="Page navigation example" style="align-items: center;margin-top: 20px;text-align: center">
-        <ul class="pagination justify-content-center" id="nav">
-        </ul>
-            <strong id="strong">共x条记录,共x页</strong>
-    </nav>
+
+
+
+</div>
+<script>
+    new Vue({
+        el:"#app",
+        data(){
+            return{
+                //
+                dialogVisible: false,
+                drawer: false,
+                //导航页数据
+                tables:'',
+                //图片展示数据
+                img_list:'',
+                //当前页码
+                currentPage:1,
+                //总数
+                totalCount:123,
+                //总页码
+                totalPage:5,
+                //搜索的内容
+                search:'',
+                //当前页面的内容
+                table_name:'Xiuren',
+                //每页数量
+                rows:-1,
+                prefix:'',
+                suffix:'',
+                urls:'',
+                loadings: [],
+
+            }
+        },
+        created(){
+            this.table();
+            this.imglist();
+        },
+        methods:{
+            imgload(i){
+
+          this.loadings[i].close();
+
+                // console.log(this.loading[i])
+                // this.loading[i] = false
+                // console.log(this.loading[i])
+            },
+            load(i){
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.loadings[i] = loading;
+
+
+
+            },
+            imgshow(id,table_names){
+                console.log("id:"+id+"tablename:"+table_names);
+                let _this = this
+                this.urls = []
+                axios.get("https://1234560.dynv6.net/imgerlist",{params:{"tables":table_names,"id":id}}).then(function(res){
+                    _this.urls = res.data.collection;
+                    console.log(res.data.collection)
+                    _this.prefix = res.data.prefix;
+                    _this.suffix = res.data.suffix;
+
+                }).catch(function (error) {
+                        console.log("error"+error)
+                        _this.imgshow(id,table_names);
+                    }
+                )
+                this.dialogVisible = true
+            },
+            //拖动滚动条翻页
+            change(e){
+                    this.imglist();
+            },
+            handleClose(done) {
+                done();
+            },
+            //导航页中的数据被选中
+            handleClick(tab) {
+                this.table_name = tab
+                this.currentPage = 1
+                this.imglist()
+            },
+            //tables加载
+            table(){
+                let _this = this
+                axios.post("https://1234560.dynv6.net/tables").then(function(res){
+                    _this.tables = res.data;
+                }).catch(function (error) {
+                    console.log("error"+error)
+                    _this.table();
+                    }
+                )
+            },
+            //图片数据加载
+            imglist(){
+                let _this = this
+                axios.get("https://1234560.dynv6.net/imger",{params:{"tables":_this.table_name,"search":_this.search,"row":_this.currentPage}}).then(function(res){
+                    _this.img_list = res.data.list;
+                    _this.totalCount = res.data.totalCount;
+                    _this.totalPage = res.data.totalPage;
+                    _this.rows = res.data.rows;
+                    // $("#nav").empty();
+                    // _this.showpager(_this.table_name,_this.currentPage,_this.totalPage);
+                }).catch(function (error) {
+                        console.log("error"+error)
+                        _this.imglist();
+                    }
+                )
+            },
+
+        },
+    })
+</script>
 </body>
 </html>
+
