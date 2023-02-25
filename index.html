@@ -17,14 +17,13 @@
     <!-- 引入组件库 -->
 
     <!-- 2. jQuery导入，建议使用1.9以上的版本 -->
-<!--     <script src="https://resource.dynv6.net/jquery/jquery-3.6.1.min.js"></script> -->
+<!--    <script src="https://resource.dynv6.net/jquery/jquery-3.6.1.min.js"></script>-->
     <!-- 3. 导入bootstrap的js文件 -->
-<!--     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
     <script src="js/vue.js"></script>
     <script src="js/axios.min.js"></script>
     <script src="js/index.js"></script>
-<!--     <link href="css/display.css"> -->
     <link href="css/index.css">
 
 <style>
@@ -109,7 +108,13 @@
     <div class="row  " id="imgrow" >
         <li  class="el-col-md-8 el-col-lg-4 el-col-12 el-sm-12 related_box" v-for="(item,i) of img_list">
             <a type="primary" @click="imgshow(item.id,item.table_name)" >
-            <img :src="item.thumbnail"><br>
+                <img :src="item.thumbnail">
+                <el-image hidden="hidden" :src="item.thumbnail">
+                    <div slot="placeholder" class="image-slot" v-loading="true" style="width: 100% ;height: 200px;align-items:center;float: left">
+                        加载中<span class="dot">...</span>
+                    </div>
+                </el-image>
+                </img>
             <span class="r_title">{{item.name}}</span>
         </a>
 
@@ -122,14 +127,25 @@
 
     <el-dialog
             :visible.sync="dialogVisible"
-            width="90%"
+            width="80%"
             :before-close="handleClose"
          >
-<!--        <div style="overflow:scroll;height: 50%">-->
+
             <div class="demo-image__lazy"  >
-                <el-image v-for="(url,i) in urls" :key="url" :src="(prefix)+(suffix)+'/'+(url)" style="width: 100%" lazy>
+                <div v-for="(url,i) in urls" >
+                <el-image
+
+                        @load="imgload(i)"
+                         :key="url"
+                        :src="(prefix)+(suffix)+'/'+(url)"
+                        style="width: 100%"
+                        lazy
+                >
+                    <div slot="placeholder" class="image-slot" v-loading="true" style="width: 100% ;height: 300px">
+                        加载中<span class="dot">...</span>
+                    </div>
                 </el-image>
-<!--            </div>-->
+            </div>
     </div>
     </el-dialog>
 
@@ -146,7 +162,7 @@
                 dialogVisible: false,
                 drawer: false,
                 //导航页数据
-                tables:'',
+                tables:'', 
                 //图片展示数据
                 img_list:'',
                 //当前页码
@@ -174,21 +190,12 @@
         },
         methods:{
             imgload(i){
-
-          this.loadings[i].close();
-
-                // console.log(this.loading[i])
-                // this.loading[i] = false
-                // console.log(this.loading[i])
+                this.loadings[i] = false;
             },
             load(i){
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
-                this.loadings[i] = loading;
+
+                this.loadings[i] = true;
+                console.log(i)
 
 
 
@@ -256,4 +263,3 @@
 </script>
 </body>
 </html>
-
