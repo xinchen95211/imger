@@ -140,6 +140,8 @@
                         :src="(prefix)+(suffix)+'/'+(url)"
                         style="width: 100%"
                         lazy
+                        :preview-src-list="srcList"
+                        :initial-index ="i"
                 >
                     <div slot="placeholder" class="image-slot" v-loading="true" style="width: 100% ;height: 300px">
                         加载中<span class="dot">...</span>
@@ -181,6 +183,9 @@
                 suffix:'',
                 urls:'',
                 loadings: [],
+                srcList: [
+                 
+                ],
 
             }
         },
@@ -205,14 +210,22 @@
                 this.urls = []
                 axios.get("https://1234560.dynv6.net/photo/"+id).then(function(res){
                     _this.urls = res.data.collection;
+
                     console.log(res.data)
                     _this.prefix = res.data.prefix;
                     _this.suffix = res.data.suffix;
+
+                    for (let i = 0; i < res.data.collection.length; i++) {
+                        _this.srcList[i] = res.data.prefix + res.data.suffix + "/"+res.data.collection[i]
+                    }
                 }).catch(function (error) {
                         console.log("error"+error)
                         _this.imgshow(id);
                     }
                 )
+
+
+
                 this.dialogVisible = true
             },
             //拖动滚动条翻页
