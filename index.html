@@ -208,6 +208,7 @@
             imgshow(id){
                 let _this = this
                 this.urls = []
+                this.srcList = []
                 axios.get("https://1234560.dynv6.net/photo/"+id).then(function(res){
                     _this.urls = res.data.collection;
 
