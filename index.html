@@ -73,7 +73,7 @@
     <el-row type="flex" style="text-align: center;align-items: center">
         <el-col :xs="6" :sm="3" :lg="2"><el-link @click="drawer = true" icon="el-icon-guide" >导航页</el-link></el-col>
         <el-col  :xs="17" :sm="20" :lg="21">
-            <p style="float:right;font-size:10px;color: #909399">*拖动进度条翻页</p>
+            <p style="float:left;font-size:10px;color: #909399;margin-top: 1px">*拖动进度条翻页</p>
             <el-slider @change="change"  v-model="currentPage" :min="1" :max="totalPage" v-if="totalPage!=1">
             </el-slider>
             <div> 共{{totalCount}}条数据,共{{totalPage}}页,当前第{{currentPage}}页</div>
