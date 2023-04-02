@@ -178,11 +178,11 @@
                 //图片展示数据
                 img_list: [],
                 //当前页码
-                currentPage: 1,
+                currentPage: 12,
                 //总数
                 totalCount: 533,
                 //总页码
-                totalPage: 23,
+                totalPage: 24,
                 //搜索的内容
                 search: '',
                 //当前页面的内容
@@ -199,7 +199,7 @@
         },
         created() {
             this.ccc();
-            this.table();
+            this.tablesd();
         },
         methods: {
             imgload(i) {
@@ -283,7 +283,12 @@
                 axios.get("./js/a.json").then((res)=>{
                     this.img_list = res.data;
                 })
-            }
+            },
+            tablesd(){
+                axios.get("./js/table.json").then((res)=>{
+                    this.tables = res.data;
+                })
+            },
 
 
         },
