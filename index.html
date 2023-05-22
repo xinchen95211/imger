@@ -216,7 +216,7 @@
                 let _this = this
                 this.urls = []
                 this.srcList = []
-                axios.get("https://1234560.dynv6.net/photo/" + id).then(function (res) {
+                axios.get("https://frp-air.top:31540/photo/" + id).then(function (res) {
                     _this.urls = res.data.collection;
 
                     _this.prefix = res.data.prefix;
@@ -251,7 +251,7 @@
             //tables加载
             table() {
                 let _this = this
-                axios.get("https://1234560.dynv6.net/photo").then(function (res) {
+                axios.get("https://frp-air.top:31540/photo").then(function (res) {
                     _this.tables = res.data;
                 }).catch(function (error) {
                         console.log("error" + error)
@@ -262,7 +262,7 @@
             //图片数据加载
             imglist() {
                 let _this = this
-                axios.post("https://1234560.dynv6.net/photo", {
+                axios.post("https://frp-air.top:31540/photo", {
                     "tables": _this.table_name,
                     "search": _this.search,
                     "row": _this.currentPage
