@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script src="js/index.js"></script>
+    <link href="css/index.css">
+    <script src="js/http.js"></script>
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    html {
+        height: 100%;
+    }
+    body {
+        height: 100%;
+    }
+    .container {
+        height: 100%;
+        background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
+    }
+    .login-wrapper {
+        background-color: #fff;
+        width: 288px;
+        height: 600px;
+        border-radius: 20px;
+        padding: 0 40px;
+        position: relative;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .header {
+        font-size: 38px;
+        font-weight: bold;
+        text-align: center;
+        line-height: 90px;
+    }
+    .input-item {
+        display: block;
+        width: 100%;
+        margin-bottom: 0;
+        border: 0;
+        padding: 10px;
+        font-size: 18px;
+        outline: none;
+    }
+    .input-item::placeholder {
+        text-transform: uppercase;
+    }
+    .btn {
+        border-radius: 15px;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        margin-top: 40px;
+        background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+        color: #fff;
+    }
+    .msg {
+        text-align: center;
+        line-height: 50px;
+    }
+    a {
+        text-decoration-line: none;
+        color: #abc1ee;
+    }
+
+    .input-item-row {
+        display: flex;
+        align-items: center;
+    }
+    .input-item-row img {
+       border-radius: 10px;
+    }
+
+</style>
+<!--登陆页面-->
+<body>
+
+
+<div id="apps" class="container">
+    <div class="login-wrapper">
+        <div class="header">
+            <p>{{btn_text}}</p>
+        </div>
+        <div class="form-wrapper">
+            <el-input type="text"     v-model="ruleForm.username" placeholder="用户名" class="input-item" clearable></el-input>
+            <el-input type="password" v-model="ruleForm.password" placeholder="密码" class="input-item" clearable></el-input>
+            <el-input type="password" v-model="ruleForm.checkpassword" placeholder="确认密码" class="input-item" v-show="login_status == 1" clearable></el-input>
+            <el-input type="text"     v-model="ruleForm.email" placeholder="邮箱" class="input-item" v-show="login_status == 1" clearable></el-input>
+            <el-input type="text"     v-model="ruleForm.Invite" placeholder="邀请码" class="input-item" v-show="login_status == 1" clearable></el-input>
+            <div class="input-item-row">
+                <el-input type="text" v-model="ruleForm.checkcode" placeholder="验证码" class="input-item" clearable></el-input>
+                <img src="images/checkcode.png" height="40" width="100">
+            </div>
+            <div id="btn" class="btn" v-on:click="login()">{{btn_text}}</div>
+        </div>
+        <div class="msg" v-show="login_status == 0">
+            没有账户?
+            <a  v-on:click="go_register()" >注册一个</a>
+        </div>
+        <div class="msg" v-show="login_status == 1">
+            已有账户?
+            <a  v-on:click="go_login()" >去登陆</a>
+        </div>
+    </div>
+</div>
+<script>
+
+    new Vue({
+        el: "#apps",
+        data() {
+            return {
+                //输入内容
+                ruleForm:{
+                    username: '',
+                    password: '',
+                    checkpassword:'',
+                    email:'',
+                    Invite:'',
+                    checkcode:'',
+
+                },
+                //输入校验
+                     login_status: 0,
+                    btn_text: '登陆',
+
+
+            };
+        },
+        created() {
+
+        },
+        methods: {
+            go_register(){
+                this.btn_text = '注册'
+                this.login_status = 1;
+            },
+            go_login(){
+                this.btn_text = '登陆'
+                this.login_status = 0;
+            },
+            login(){
+                //封装数据
+                var login_resst;
+                switch (this.login_status){
+                    case 0 : {
+                        login_resst = login_support(this.ruleForm);
+                        break;
+                    }
+                    case 1 :{
+                        login_resst = register_support(this.ruleForm);
+                        break;
+                    }
+                }
+                login_resst.then((res) => {
+                    this.$message(res.data)
+                });
+
+
+            }
+        }
+    });
+</script>
+</body>
+</html>
