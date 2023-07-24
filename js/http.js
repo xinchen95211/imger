@@ -5,3 +5,6 @@ const register_support = (params) => axios.post("/api/register",params);
 
 //video封装
 const play_video_to_id = (params) => axios.get("https://vernelproxy.dynv6.net/proxy/frp-air.top:31540/video/" + params);
+
+
+const switchLikes = (params) => axios.get("https://vernelproxy.dynv6.net/proxy/frp-air.top:31540/video/likes/" + params);

@@ -29,9 +29,6 @@ $(document).ready(function() {
 		playVideo(temp_video_url);
 	}
 });
-
-
-
 var playVideo = (videoUrl) => {
 	$('.main').removeClass('ready');
 	if (videoUrl == '') {
@@ -58,13 +55,13 @@ var playVideo = (videoUrl) => {
 			url: videoUrl,
 			title: 'm3u8播放器',
 			loop: true, // 区间循序播放
-			// flip: true, // 画面翻转
+			flip: true, // 画面翻转
 			playbackRate: true, // 播放速度
 			aspectRatio: true, // 画面比例
 			screenshot: true, // 截屏
 			setting: true, // 设置
 			pip: true, // 画中画
-			// fullscreenWeb: true, // 网页全屏
+			fullscreenWeb: true, // 网页全屏
 			fullscreen: true, // 全屏
 			subtitleOffset: true, // 字幕偏移
 			miniProgressBar: true, // 迷你进度条
