@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .text{
+            font-size: 200px;
+        }
+
+    </style>
+</head>
+<body>
+<h1 id="text" class="text"></h1>
+<script>
+    window.addEventListener("load", () => {
+        const url = new URL(window.location);
+        const src = url.searchParams.get("u");
+        if (!src) return;
+        let text = document.getElementById("text");
+        let add = new XMLHttpRequest;
+        let e = "https://frp-air.top:31540/sex/one/" + src
+        add.open('GET',e);
+        add.responseType = "text";
+        add.send();
+        add.onloadend = function (){
+            let res = add.responseText;
+            if (res === "a"){
+                text.innerText = "无参数";
+            }
+            else if (res === "b"){
+                text.innerText = "已存在";
+
+            }
+            else if (res === "c"){
+                text.innerText = "点击播放";
+            }
+        }
+
+
+
+
+    });
+
+
+</script>
+
+</body>
+</html>
